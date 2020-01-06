@@ -6,24 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"time"
 )
-
-func Example_marshallJSON() {
-	t := Task{
-		"Laundry",
-		DONE,
-		NewDeadline(time.Date(2020, time.January, 4, 15, 43, 0, 0, time.UTC)),
-	}
-	b, err := json.Marshal(t)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	fmt.Println(string(b))
-	// Output:
-	// {"Title":"Laundry","Status":2,"Deadline":"2020-01-04T15:43:00Z"}
-}
 
 func Example_unmarshalJSON() {
 	b := []byte(`{"Title":"Buy Milk","Status":2,"Deadline":"2020-01-04T15:43:00Z"}`)
