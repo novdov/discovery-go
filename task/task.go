@@ -1,0 +1,88 @@
+package task
+
+import (
+	"errors"
+	"fmt"
+	"time"
+)
+
+type status int
+
+const (
+	UNKNOWN status = iota
+	TODO
+	DONE
+)
+
+func (s status) String() string {
+	switch s {
+	case UNKNOWN:
+		return "UNKNOWN"
+	case TODO:
+		return "TODO"
+	case DONE:
+		return "DONE"
+	default:
+		return ""
+	}
+}
+
+func (s string) MarshalJSON() ([]byte, error) {
+	str := s.String()
+	if str == "" {
+		return nil, errors.New("status.MarshalJSON: unknown value")
+	}
+	return []byte(fmt.Sprintf("\"%s\"")), nil
+}
+
+func (s *status) UnmarshalJSON(data []byte) error {
+	switch string(data) {
+	case `"UNKNOWN"`:
+		*s = UNKNOWN
+	case `"TODO"`:
+		*s = TODO
+	case `"DONE"`:
+		*s = DONE
+	default:
+		return errors.New("status.UnmarshalJSON: unknown value")
+	}
+	return nil
+}
+
+type Deadline struct {
+	time.Time
+}
+
+func NewDeadline(t time.Time) *Deadline {
+	return &Deadline{t}
+}
+
+type Task struct {
+	Title    string    `json:"title,omitempty"`
+	Status   status    `json:"status,omitempty"`
+	Deadline *Deadline `json:"deadline,omitempty"`
+	Priority int       `json:"priority,omitempty"`
+	SubTasks []Task    `json:"subTasks,omitempty"`
+}
+
+func (t Task) String() string {
+	check := "v"
+	if t.Status != DONE {
+		check = " "
+	}
+	return fmt.Sprintf("[%s] %s %s", check, t.Title, t.Deadline)
+}
+
+type IncludeSubTasks Task
+
+func (t IncludeSubTasks) indentedString(prefix string) string {
+	str := prefix + Task(t).String()
+	for _, st := range t.SubTasks {
+		str += "\n" + IncludeSubTasks(st).indentedString(prefix+" ")
+	}
+	return str
+}
+
+func (t IncludeSubTasks) String() string {
+	return t.indentedString("")
+}

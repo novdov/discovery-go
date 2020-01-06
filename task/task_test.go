@@ -1,4 +1,4 @@
-package ch05
+package task
 
 import (
 	"bytes"
