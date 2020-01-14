@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/novdov/discovery-go/task"
+	"github.com/novdov/gogo/discovery-go/task"
 )
 
 type ResponseError struct {
