@@ -19,7 +19,7 @@ func (err ResponseError) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf("\"%v\"", err.Err)), nil
 }
 
-func (err *ResponseError) UnMarshalJSSON(b []byte) error {
+func (err *ResponseError) UnmarshalJSSON(b []byte) error {
 	var v interface{}
 	if err := json.Unmarshal(b, &v); err != nil {
 		return err
@@ -42,7 +42,7 @@ func (err *ResponseError) UnMarshalJSSON(b []byte) error {
 }
 
 type Response struct {
-	ID task.ID `json:"id,omitempty"`
-	Task task.Task `json:"task"`
+	ID    task.ID       `json:"id,omitempty"`
+	Task  task.Task     `json:"task"`
 	Error ResponseError `json:"error"`
 }
